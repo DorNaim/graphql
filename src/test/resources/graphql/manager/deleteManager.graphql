@@ -1,0 +1,3 @@
+mutation{
+  deleteManager(id: ___managerId___)
+}

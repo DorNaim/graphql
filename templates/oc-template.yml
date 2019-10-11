@@ -1,0 +1,183 @@
+apiVersion: v1
+kind: Template
+metadata:
+  creationTimestamp: null
+  name: oc-graphql-template
+objects:
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftWebConsole
+    creationTimestamp: null
+    generation: 1
+    labels:
+      app: "${APP_NAME}"
+    name: "${APP_NAME}"
+  spec:
+    replicas: 1
+    selector:
+      app: "${APP_NAME}"
+      deploymentconfig: "${APP_NAME}"
+    strategy:
+      activeDeadlineSeconds: 21600
+      resources: {}
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 600
+        updatePeriodSeconds: 1
+      type: Rolling
+    template:
+      metadata:
+        annotations:
+          openshift.io/generated-by: OpenShiftWebConsole
+        creationTimestamp: null
+        labels:
+          app: "${APP_NAME}"
+          deploymentconfig: "${APP_NAME}"
+      spec:
+        containers:
+        - image: "${DOCKER_REPO}/${DOCKER_IMAGE}"
+          imagePullPolicy: Always
+          name: "${APP_NAME}"
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          resources:
+            limits:
+              cpu: "1"
+              memory: 1000Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /tmp
+            name: "${APP_NAME}-1"
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - emptyDir: {}
+          name: "${APP_NAME}-1"
+    test: false
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - "${APP_NAME}"
+        from:
+          kind: ImageStreamTag
+          name: "${APP_NAME}:${IMAGE_TAG}"
+          namespace: "${NAMESPACE}"
+      type: ImageChange
+  status:
+    availableReplicas: 0
+    latestVersion: 0
+    observedGeneration: 0
+    replicas: 0
+    unavailableReplicas: 0
+    updatedReplicas: 0
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    annotations:
+      openshift.io/image.dockerRepositoryCheck: 2019-07-17T06:38:59Z
+    creationTimestamp: null
+    generation: 2
+    labels:
+      app: "${APP_NAME}"
+    name: "${APP_NAME}"
+  spec:
+    lookupPolicy:
+      local: false
+    tags:
+    - annotations:
+        openshift.io/generated-by: OpenShiftWebConsole
+        openshift.io/imported-from: "${DOCKER_REPO}/${DOCKER_IMAGE}:${IMAGE_TAG}"
+      from:
+        kind: DockerImage
+        name: "${DOCKER_REPO}/${DOCKER_IMAGE}:${IMAGE_TAG}"
+      generation: 2
+      importPolicy: {}
+      name: latest
+      referencePolicy:
+        type: Source
+  status:
+    dockerImageRepository: ""
+- apiVersion: v1
+  kind: Route
+  metadata:
+    annotations:
+      openshift.io/host.generated: "true"
+    creationTimestamp: null
+    labels:
+      app: "${APP_NAME}"
+    name: "${APP_NAME}"
+  spec:
+    host: "${NAMESPACE}-${APP_NAME}.cloud"
+    port:
+      targetPort: 8080-tcp
+    to:
+      kind: Service
+      name: "${APP_NAME}"
+      weight: 100
+    wildcardPolicy: None
+  status:
+    ingress:
+    - conditions:
+      - lastTransitionTime: 2019-07-17T06:42:56Z
+        status: "True"
+        type: Admitted
+      host: "${NAMESPACE}-${APP_NAME}.cloud"
+      routerName: router
+      wildcardPolicy: None
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftWebConsole
+    creationTimestamp: null
+    labels:
+      app: "${APP_NAME}"
+    name: "${APP_NAME}"
+  spec:
+    ports:
+    - name: 8080-tcp
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    selector:
+      deploymentconfig: "${APP_NAME}"
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+parameters:
+- name: NAMESPACE
+  displayName: Namespace
+  description: OpenShift project name
+  value: "default-namespace"
+  required: true
+- name: APP_NAME
+  displayName: Application Name
+  required: true
+  value: sample-graphql
+- name: DOCKER_REPO
+  displayName: Docker repository
+  description: Docker repository of Application image
+  value: "default-docker-registry.com"
+  required: true
+- name: DOCKER_IMAGE
+  displayName: Docker image
+  value: sample-graphql
+  description: Application image name
+  required: true
+- name: IMAGE_TAG
+  displayName: Docker image tag
+  description: Application docker image tag
+  value: latest
+  required: true

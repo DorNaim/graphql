@@ -1,0 +1,8 @@
+mutation{
+  newEmployee(firstName: "Super Duper Cool Employee", lastName:"Naim",managerId: ___managerId___){
+    id
+    manager{
+      id
+    }
+  }
+}

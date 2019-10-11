@@ -1,0 +1,6 @@
+mutation{
+  updateEmployee(id: ___employeeId___,firstName: "New first name", lastName:"Naim"){
+    id
+    firstName
+  }
+}

@@ -1,0 +1,8 @@
+{
+  getAllEmployees {
+    id
+    firstName
+    creationDate
+  }
+
+}

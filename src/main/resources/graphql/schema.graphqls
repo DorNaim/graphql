@@ -1,0 +1,21 @@
+#Support for date formatting
+scalar Date
+
+type Query {
+}
+
+type Mutation {
+}
+
+enum Department {
+  CLOUD
+  INTEGRATION
+  RESEARCH_AND_DEVELOPMENT
+}
+
+#Interface for inheritance
+interface Human{
+  id: ID!
+  firstName: String!
+  lastName: String!
+}

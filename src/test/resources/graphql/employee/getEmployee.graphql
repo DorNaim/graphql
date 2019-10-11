@@ -1,0 +1,10 @@
+{
+  getEmployee(id: ___employeeId___) {
+    id
+    firstName
+    creationDate
+    manager{
+      id
+    }
+  }
+}

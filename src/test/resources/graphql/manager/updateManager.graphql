@@ -1,0 +1,7 @@
+mutation{
+  updateManager(id: ___managerId___, firstName: "New First Name", lastName:"New Last Name", department: RESEARCH_AND_DEVELOPMENT){
+    id
+    firstName
+    lastName
+  }
+}

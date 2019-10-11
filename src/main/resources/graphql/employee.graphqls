@@ -1,0 +1,24 @@
+type Employee implements Human {
+  id: ID!
+  firstName: String!
+  lastName: String!
+  manager: Manager!
+  creationDate: Date!
+}
+
+extend type Query {
+  getAllEmployees: [Employee]!
+  getEmployee(id: Long!): Employee
+  countEmployees: Long!
+}
+
+extend type Mutation {
+  newEmployee(firstName: String!, lastName: String!, managerId: Long!) : Employee!
+  updateEmployee(id: Long!, firstName: String, lastName: String, managerId: Long) : Employee!
+  deleteEmployee(id: Long!) : Boolean
+}
+
+#extend type Subscription{
+ ##Subscribe to all new employees
+    #onNewEmployee: Employee!
+#}

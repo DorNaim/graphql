@@ -1,0 +1,3 @@
+mutation{
+  deleteEmployee(id: ___employeeId___)
+}

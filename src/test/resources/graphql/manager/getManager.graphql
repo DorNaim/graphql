@@ -1,0 +1,11 @@
+{
+  getManager(id: ___managerId___) {
+    id
+    firstName
+    creationDate
+    department
+    employees {
+      id
+    }
+  }
+}

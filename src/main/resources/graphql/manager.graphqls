@@ -1,0 +1,27 @@
+type Manager implements Human {
+  id: ID!
+  firstName: String!
+  lastName: String!
+  department: Department!
+  employees: [Employee]
+  creationDate: Date!
+}
+
+input CreateManagerInput {
+  firstName: String!
+  lastName: String!
+  department: String!
+}
+
+extend type Query {
+  getAllManagers: [Manager]!
+  getManager(id: Long!): Manager
+  countManagers: Long!
+}
+
+extend type Mutation {
+  newManager(firstName: String!, lastName: String!, department: Department!) : Manager!
+  newManagerByInputObject(createManagerInput: CreateManagerInput!) : Manager!
+  updateManager(id: Long!, firstName: String, lastName: String, department: Department) : Manager!
+  deleteManager(id: Long!) : Boolean
+}

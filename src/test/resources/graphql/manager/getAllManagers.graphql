@@ -1,0 +1,11 @@
+{
+  getAllManagers {
+    id
+    firstName
+    creationDate
+    department
+    employees {
+      id
+    }
+  }
+}
